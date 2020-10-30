@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">owner</string>
+    <string name="add">add vocabulary</string>
+    <string name="test">let us have a test</string>
+    <string name="list">show all my content</string>
+    <string name="title">OWNER</string>
+    <string name="describe">store your own Japanese vocabularies</string>
+    <string name="Ja">please enter Japanese</string>
+    <string name="ka">please enter katakana</string>
+    <string name="Ch">please enter Chinese</string>
+
+</resources>
