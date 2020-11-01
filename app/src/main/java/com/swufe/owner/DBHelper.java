@@ -3,12 +3,14 @@ package com.swufe.owner;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final int VERSION = 1;
-    private static final String DB_NAME = "myvo.db";
+    private static final String DB_NAME = "owner.db";
     public static final String TB_NAME = "my_vo";
+    private static final String TAG="DBHelper";
 
 
     public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory,
@@ -21,7 +23,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE "+TB_NAME+"(ID INTEGER PRIMARY KEY AUTOINCREMENT,CURNAME TEXT,CURRATE TEXT)");
+        Log.i(TAG, "onCreate: " +TB_NAME);
+        db.execSQL("CREATE TABLE "+TB_NAME+"(ID INTEGER PRIMARY KEY AUTOINCREMENT,ENSTRING TEXT,CHSTRING TEXT)");
     }
 
     @Override

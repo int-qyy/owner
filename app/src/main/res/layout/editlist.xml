@@ -8,21 +8,14 @@
     tools:context=".ShowList">
 
     <TextView
-        android:id="@+id/Jap"
+        android:id="@+id/Eng"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/app_name"
         android:textColor="@color/btn"
         android:textSize="20sp" />
 
-    <TextView
-        android:id="@+id/kan"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/app_name"
-        android:textColor="@color/light_blue"
-        android:textSize="20sp" />
+
 
     <TextView
         android:id="@+id/Chi"

@@ -7,41 +7,53 @@
     android:orientation="vertical"
     tools:context=".AddVo">
 
-    <EditText
-        android:id="@+id/Ja"
-        android:layout_marginTop="50dp"
+
+    <TextView
+        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/Ja"
-        android:layout_margin="10dp"
-        />
+        android:text="add dictate words"
+        android:layout_marginTop="30dp"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:textColor="@color/btn"/>
 
     <EditText
-        android:id="@+id/ka"
-        android:layout_marginTop="50dp"
+        android:id="@+id/En"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/ka"
-        android:layout_margin="10dp"
-         />
+        android:layout_gravity="center"
+        android:textSize="20sp"
+        android:layout_marginTop="100dp"
+        android:hint="@string/En" />
 
     <EditText
         android:id="@+id/Ch"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="100dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="20sp"
         android:hint="@string/Ch"
-        android:layout_margin="10dp"
+
          />
 
     <Button
         android:id="@+id/commit"
-        android:layout_gravity="center"
-        android:layout_marginTop="100dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="150dp"
         android:background="@color/purple_200"
-        android:text="commit"
-        android:onClick="commit"/>
+        android:onClick="commit"
+        android:text="submit" />
 
+    <Button
+        android:id="@+id/returnM"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="40dp"
+        android:background="@color/purple_200"
+        android:onClick="returnM"
+        android:text="return" />
 </LinearLayout>

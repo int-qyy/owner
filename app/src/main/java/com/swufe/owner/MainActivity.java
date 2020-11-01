@@ -23,4 +23,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent=new Intent(MainActivity.this, TestVo.class);
         startActivity(intent);
     }
+    public void showV(View view){
+        Intent intent=new Intent(MainActivity.this, DeleteList.class);
+        startActivity(intent);
+    }
 }

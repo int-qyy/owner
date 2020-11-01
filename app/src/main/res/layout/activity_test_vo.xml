@@ -1,9 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".TestVo">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="listen and submit your answer"
+        android:layout_marginTop="30dp"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:textColor="@color/btn"/>
+
+    <TextView
+        android:id="@+id/ch1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="30sp"
+        android:text="show Chinese mean" />
+
+    <EditText
+        android:id="@+id/ipt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="20sp"
+        android:inputType="textPersonName"
+        android:hint="@string/En"
+        />
+
+    <TextView
+        android:id="@+id/showVo"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_margin="10sp"
+        android:textSize="40sp"
+        android:text=" "
+        android:hint="答案"/>
+
+    <Button
+        android:id="@+id/submitAn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="80dp"
+        android:background="@color/purple_200"
+        android:onClick="submit"
+        android:text="Submit" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/reM"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="18dp"
+            android:layout_marginTop="100dp"
+            android:background="@color/purple_200"
+            android:gravity="center"
+            android:onClick="reM"
+            android:text="return" />
+
+        <Button
+            android:id="@+id/ans"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="18dp"
+            android:layout_marginTop="100dp"
+            android:background="@color/purple_200"
+            android:onClick="ans"
+            android:text="show answer" />
+        <Button
+            android:id="@+id/nex"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="18dp"
+            android:layout_marginTop="100dp"
+            android:background="@color/purple_200"
+            android:gravity="center"
+            android:onClick="nex"
+            android:text="next one" />
+    </LinearLayout>
+
+</LinearLayout>

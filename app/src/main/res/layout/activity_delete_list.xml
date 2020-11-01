@@ -14,11 +14,22 @@
     <ListView
         android:id="@+id/dlist"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
+        android:layout_height="540dp"
         android:layout_alignParentStart="true"
-        android:textSize="22sp"
-        />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:textSize="22sp">
+
+    </ListView>
+
+    <Button
+        android:id="@+id/rem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@color/purple_200"
+        android:layout_gravity="center_horizontal"
+        android:onClick="rem"
+        android:text="return" />
 
 </LinearLayout>
