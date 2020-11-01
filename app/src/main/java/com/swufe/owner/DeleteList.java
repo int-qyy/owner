@@ -56,7 +56,7 @@ public class DeleteList  extends AppCompatActivity implements Runnable, AdapterV
                             new String[] { "EnString", "ChString" },new int[] { R.id.Eng,R.id.Chi} );
                     listdelete.setAdapter(listItemAdapter);
 
-                    //listdelete.setOnItemClickListener(DeleteActivity.this);//添加事件监听
+                    listdelete.setOnItemClickListener(DeleteList.this);//添加事件监听
                     listdelete.setOnItemLongClickListener(DeleteList.this);//添加长按事件监听
                 }
                 super.handleMessage(msg);
@@ -104,7 +104,18 @@ public class DeleteList  extends AppCompatActivity implements Runnable, AdapterV
         Log.i(TAG, "onItemClick: update english=" + ENGLISH);
         Log.i(TAG, "onItemClick: update chinese=" + CHINESE);
         DBManager dbManager = new DBManager(DeleteList.this);
-        dbManager.delete(ENGLISH);
+        Intent config_new = new Intent(this,EditVo.class);
+        //传递参数
+        Bundle bdl = new Bundle();
+        bdl.putString("EnString",ENGLISH);
+        bdl.putString("ChString",CHINESE);
+        config_new.putExtras(bdl);
+
+        Log.i(TAG,"openOne:update english=" + ENGLISH);
+        Log.i(TAG,"openOne:update chinese=" + CHINESE);
+        //打开新页面
+        startActivity(config_new);
+
 
 
 

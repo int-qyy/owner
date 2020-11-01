@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Owner">
-        <activity android:name=".DeleteList"></activity>
+        <activity android:name=".EditVo"></activity>
+        <activity android:name=".DeleteList" />
         <activity android:name=".TestVo" />
         <activity android:name=".AddVo" />
         <activity android:name=".MainActivity">

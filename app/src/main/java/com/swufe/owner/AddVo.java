@@ -30,7 +30,7 @@ public class AddVo extends AppCompatActivity {
         Stetho.initializeWithDefaults(this);
 
     }
-    public void commit(View view){
+    public void submit(View view){
         List<String> retList = new ArrayList<String>();
         DBManager dbManager = new DBManager(AddVo.this);
         String english=EnString.getText().toString();

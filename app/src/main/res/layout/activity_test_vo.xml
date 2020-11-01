@@ -25,6 +25,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:textSize="30sp"
+        android:gravity="center"
         android:text="show Chinese mean" />
 
     <EditText
@@ -35,7 +36,8 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:textSize="20sp"
-        android:inputType="textPersonName"
+        android:gravity="center"
+        android:inputType="text"
         android:hint="@string/En"
         />
 
@@ -46,6 +48,7 @@
         android:layout_margin="10sp"
         android:textSize="40sp"
         android:text=" "
+        android:gravity="center"
         android:hint="答案"/>
 
     <Button

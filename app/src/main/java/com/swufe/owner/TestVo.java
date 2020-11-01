@@ -1,9 +1,9 @@
 package com.swufe.owner;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -12,15 +12,29 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import com.swufe.owner.GetMP3;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
-public class TestVo extends AppCompatActivity {
+public class TestVo extends AppCompatActivity implements Runnable {
 
     private static final String TAG="TestVo";
     VoItem voItem = null;
     String english,chinese;
     EditText EnString;
     TextView ChString,ShowString;
+    Handler handler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +43,6 @@ public class TestVo extends AppCompatActivity {
         ChString=(TextView)findViewById(R.id.ch1);
         ShowString=(TextView) findViewById(R.id.showVo);
 
-
         DBManager dbManager = new DBManager(TestVo.this);
         Random r = new Random();
         int ran1 = r.nextInt(100000);
@@ -37,7 +50,6 @@ public class TestVo extends AppCompatActivity {
         int ran=ran1%len;
         Log.i(TAG,"len:====="+len);
         Log.i(TAG,"now id===="+ran);
-        Log.i(TAG,"ran:====="+ran);
         voItem= dbManager.findById(ran);
         while(voItem==null){
             r = new Random();
@@ -45,7 +57,6 @@ public class TestVo extends AppCompatActivity {
              ran=ran1%len;
             Log.i(TAG,"len:====="+len);
             Log.i(TAG,"now id===="+ran);
-            Log.i(TAG,"ran:====="+ran);
             voItem= dbManager.findById(ran);
         }
         english=voItem.getEnString();
@@ -54,7 +65,21 @@ public class TestVo extends AppCompatActivity {
         Log.i(TAG,"chinese==="+chinese);
         ChString.setText(chinese);
 
+
+        Thread t = new Thread(this);
+        t.start();
+        String httpUrl = "http://fy.iciba.com/ajax.php?a=fy";
+        String httpArg="";
+        String re=GetMP3.request(httpUrl, httpArg);
+
+
     }
+
+
+
+
+
+
     private TextView.OnEditorActionListener EnterListenter = new TextView.OnEditorActionListener() {
         /**
          * 参数说明
@@ -65,7 +90,7 @@ public class TestVo extends AppCompatActivity {
          */
         @Override
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
+            if (actionId == EditorInfo.IME_ACTION_SEND) {
                 Log.i("---","输入");
                 String enString=EnString.toString();
                 Log.i(TAG,"input===="+enString);
@@ -113,5 +138,45 @@ public class TestVo extends AppCompatActivity {
     }
 
 
+    @Override
+    public void run(){
+        Log.i(TAG,"run:run()......");
+        Message msg = handler.obtainMessage(5);
+        /**
+        try{
 
+                String form = "zh";
+                String to = "en";
+                String q = "我要妹子！";
+                String url = "http://fy.iciba.com/ajax.php?a=fy";
+                String url1="http://dict-co.iciba.com/api/dictionary.php?w=good&type=json&key=XXX";
+
+                Map<String, String> params = new HashMap<>();
+                params.put("f", form);
+                params.put("t", to);
+                params.put("w", q);
+
+                CloseableHttpClient httpClient = HttpClients.createDefault();
+                HttpPost request = new HttpPost(util.getUrlWithQueryString(url, params));
+                CloseableHttpResponse response = httpClient.execute(request);
+
+                HttpEntity entity = response.getEntity();
+
+                String result = EntityUtils.toString(entity, "utf-8");
+
+                System.out.println(result);
+                EntityUtils.consume(entity);
+
+                response.getEntity().getContent().close();
+                response.close();
+                msg.obj = list1;
+                handler.sendMessage(msg);
+        }catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+         **/
+
+    }
 }

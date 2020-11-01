@@ -30,6 +30,7 @@ public class DBManager {
         //values.put("kaString", item.getKaString());
         values.put("ChString",item.getChString());
         db.insert(TBNAME, null, values);
+        Log.i(TAG,"have add");
         db.close();
     }
 
@@ -60,6 +61,7 @@ public class DBManager {
         //values.put("kaString", item.getKaString());
         values.put("CHSTRING",item.getChString());
         db.update(TBNAME, values, "ENSTRING=?", new String[]{String.valueOf(item.getEnString())});
+        Log.i(TAG,"have update");
         db.close();
     }
 

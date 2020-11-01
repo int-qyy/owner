@@ -5,40 +5,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".AddVo">
-
+    tools:context=".EditVo">
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="add dictate words"
+        android:text="update dictate words"
         android:layout_marginTop="30dp"
         android:textSize="30sp"
         android:gravity="center"
         android:textColor="@color/btn"/>
 
-    <EditText
-        android:id="@+id/En"
+    <TextView
+        android:id="@+id/EdEn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textSize="20sp"
         android:layout_marginTop="100dp"
-        android:inputType="text"
-        android:hint="@string/En"
-        />
+         />
 
     <EditText
-        android:id="@+id/Ch"
+        android:id="@+id/EdCh"
         android:layout_marginTop="100dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:inputType="text"
-        android:hint="@string/Ch"
-
-         />
+        android:onClick="submit"
+        />
 
     <Button
         android:id="@+id/commit"
