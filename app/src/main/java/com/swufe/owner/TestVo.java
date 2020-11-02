@@ -1,6 +1,11 @@
 package com.swufe.owner;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -9,24 +14,29 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.gson.Gson;
 import com.swufe.owner.GetMP3;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
-public class TestVo extends AppCompatActivity implements Runnable {
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
+import static com.swufe.owner.GetMP3.request;
+
+public class TestVo extends AppCompatActivity {
 
     private static final String TAG="TestVo";
     VoItem voItem = null;
@@ -66,18 +76,59 @@ public class TestVo extends AppCompatActivity implements Runnable {
         ChString.setText(chinese);
 
 
-        Thread t = new Thread(this);
-        t.start();
-        String httpUrl = "http://fy.iciba.com/ajax.php?a=fy";
-        String httpArg="";
-        String re=GetMP3.request(httpUrl, httpArg);
+        String httpUrl = "https://apis.baidu.com/heweather/weather/free";
+        String httpArg = "city=wuhan";
+        String jsonResult = GetMP3.request(httpUrl, httpArg);
+        /**
+        JSONObject obj = JSONObject.fromObject(jsonResult);
+        String result = obj.getString("HeWeather data service 3.0");
+        JSONArray arr = JSONArray.fromObject(result);
+        obj = arr.getJSONObject(0);
+        result = obj.getString("now");
+
+        Gson gson = new Gson();
+        Bean bean = gson.fromJson(dataString,Bean.class);
+         **/
+        final String urlxml = "https://dict-co.iciba.com/api/dictionary.php?w=" + english + "&key=9AA9FA4923AC16CED1583C26CF284C3F";
+
+            HttpUtils.sendOkHttpRequest(urlxml, new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    Toast.makeText(TestVo.this, "获取翻译数据失败！", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
+
+                    final String result = response.body().string();
+                    Log.i(TAG, result);
+
+                    runOnUiThread(new Runnable() {
+                        @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                        @Override
+                        public void run() {
+                            JsonEx.Envoice(result);
+                            SharedPreferences pref = getSharedPreferences("JsonEx", MODE_PRIVATE);
+                            final String voiceEnUrlText = pref.getString("voiceEnUrlText", "空");
+                            ImageView enVoiceImg = (ImageView) findViewById(R.id.iv_en_voice);
+                            enVoiceImg.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    try {
+                                        MediaPlayer mediaPlayer = MediaPlayer.create(TestVo.this, Uri.parse(voiceEnUrlText));
+                                        mediaPlayer.start();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            });
 
 
     }
-
-
-
-
 
 
     private TextView.OnEditorActionListener EnterListenter = new TextView.OnEditorActionListener() {
@@ -137,46 +188,4 @@ public class TestVo extends AppCompatActivity implements Runnable {
         startActivity(intent);
     }
 
-
-    @Override
-    public void run(){
-        Log.i(TAG,"run:run()......");
-        Message msg = handler.obtainMessage(5);
-        /**
-        try{
-
-                String form = "zh";
-                String to = "en";
-                String q = "我要妹子！";
-                String url = "http://fy.iciba.com/ajax.php?a=fy";
-                String url1="http://dict-co.iciba.com/api/dictionary.php?w=good&type=json&key=XXX";
-
-                Map<String, String> params = new HashMap<>();
-                params.put("f", form);
-                params.put("t", to);
-                params.put("w", q);
-
-                CloseableHttpClient httpClient = HttpClients.createDefault();
-                HttpPost request = new HttpPost(util.getUrlWithQueryString(url, params));
-                CloseableHttpResponse response = httpClient.execute(request);
-
-                HttpEntity entity = response.getEntity();
-
-                String result = EntityUtils.toString(entity, "utf-8");
-
-                System.out.println(result);
-                EntityUtils.consume(entity);
-
-                response.getEntity().getContent().close();
-                response.close();
-                msg.obj = list1;
-                handler.sendMessage(msg);
-        }catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-         **/
-
-    }
 }
