@@ -3,12 +3,12 @@ package com.swufe.owner;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -21,20 +21,18 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.gson.Gson;
-import com.swufe.owner.GetMP3;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.StringReader;
+import java.net.HttpURLConnection;
 import java.util.Random;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
-
-import static com.swufe.owner.GetMP3.request;
 
 public class TestVo extends AppCompatActivity {
 
@@ -44,6 +42,7 @@ public class TestVo extends AppCompatActivity {
     EditText EnString;
     TextView ChString,ShowString;
     Handler handler;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,20 +74,6 @@ public class TestVo extends AppCompatActivity {
         Log.i(TAG,"chinese==="+chinese);
         ChString.setText(chinese);
 
-
-        String httpUrl = "https://apis.baidu.com/heweather/weather/free";
-        String httpArg = "city=wuhan";
-        String jsonResult = GetMP3.request(httpUrl, httpArg);
-        /**
-        JSONObject obj = JSONObject.fromObject(jsonResult);
-        String result = obj.getString("HeWeather data service 3.0");
-        JSONArray arr = JSONArray.fromObject(result);
-        obj = arr.getJSONObject(0);
-        result = obj.getString("now");
-
-        Gson gson = new Gson();
-        Bean bean = gson.fromJson(dataString,Bean.class);
-         **/
         final String urlxml = "https://dict-co.iciba.com/api/dictionary.php?w=" + english + "&key=9AA9FA4923AC16CED1583C26CF284C3F";
 
             HttpUtils.sendOkHttpRequest(urlxml, new Callback() {
@@ -101,22 +86,33 @@ public class TestVo extends AppCompatActivity {
                 public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
 
                     final String result = response.body().string();
+                    Log.i(TAG,"getting=========================================");
                     Log.i(TAG, result);
-
                     runOnUiThread(new Runnable() {
                         @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                         @Override
                         public void run() {
-                            JsonEx.Envoice(result);
+                            Envoice(result);
                             SharedPreferences pref = getSharedPreferences("JsonEx", MODE_PRIVATE);
                             final String voiceEnUrlText = pref.getString("voiceEnUrlText", "空");
-                            ImageView enVoiceImg = (ImageView) findViewById(R.id.iv_en_voice);
+                            Log.i(TAG,"enurlText==============="+voiceEnUrlText);
+                            final MediaPlayer[] mediaPlayer = {new MediaPlayer()};
+                            try {
+                                mediaPlayer[0].setDataSource(TestVo.this, Uri.parse(voiceEnUrlText));
+                                mediaPlayer[0].prepare();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            ImageView enVoiceImg = (ImageView) findViewById(R.id.im_en_voice);
                             enVoiceImg.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     try {
-                                        MediaPlayer mediaPlayer = MediaPlayer.create(TestVo.this, Uri.parse(voiceEnUrlText));
-                                        mediaPlayer.start();
+                                        mediaPlayer[0].start();
+                                        Log.i(TAG,"已经播放");
+                                        mediaPlayer[0].reset();
+                                        mediaPlayer[0].release();
+                                        mediaPlayer[0] = null;
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
@@ -131,32 +127,6 @@ public class TestVo extends AppCompatActivity {
     }
 
 
-    private TextView.OnEditorActionListener EnterListenter = new TextView.OnEditorActionListener() {
-        /**
-         * 参数说明
-         * @param v 被监听的对象
-         * @param actionId  动作标识符,如果值等于EditorInfo.IME_NULL，则回车键被按下。
-         * @param event    如果由输入键触发，这是事件；否则，这是空的(比如非输入键触发是空的)。
-         * @return 返回你的动作
-         */
-        @Override
-        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-            if (actionId == EditorInfo.IME_ACTION_SEND) {
-                Log.i("---","输入");
-                String enString=EnString.toString();
-                Log.i(TAG,"input===="+enString);
-                if(enString == null || enString.equals("") || enString.equals(R.string.En)){//no input
-                    ShowString.setText( "请输入英文单词");
-                }else if(enString.equals(english)){
-                    ShowString.setText("回答对啦");
-                }else{
-                    ShowString.setText("需要继续记忆"+english);
-                    Log.i(TAG,english+enString);
-                }
-            }
-            return false;
-        }
-    };
 
     public void submit(View view){
         EnString=(EditText)findViewById(R.id.ipt);
@@ -187,5 +157,55 @@ public class TestVo extends AppCompatActivity {
         Intent intent=new Intent(TestVo.this, TestVo.class);
         startActivity(intent);
     }
+
+
+
+    public void Envoice(String result) {
+
+        try {
+
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            XmlPullParser xmlPullParser = factory.newPullParser();
+            xmlPullParser.setInput(new StringReader(result));
+            int eventType = xmlPullParser.getEventType();
+
+            String voiceUrlText = "";   //发音url
+
+
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                String nodeName = xmlPullParser.getName();
+                switch (eventType) {
+                    //开始解析
+                    case XmlPullParser.START_TAG: {
+                        switch (nodeName) {
+                            case "pron":
+                                voiceUrlText = xmlPullParser.nextText() ;
+                                Log.i(TAG,"vo========="+voiceUrlText);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    default:
+                        break;
+                }
+                eventType = xmlPullParser.next();
+            }
+
+            //创建SharedPreferences.Editor对象，指定文件名为
+            SharedPreferences.Editor editor = getSharedPreferences("JsonEx",MODE_PRIVATE).edit();
+            editor.clear();
+            Log.i(TAG,"create editor");
+            editor.putString("voiceEnUrlText",voiceUrlText);
+            Log.i(TAG,"voiceURL==============="+voiceUrlText);
+            editor.apply();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i(TAG, "解析过程中出错！！！");
+        }
+
+    }
+
+
 
 }

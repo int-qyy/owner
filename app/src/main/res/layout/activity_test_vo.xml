@@ -36,16 +36,16 @@
 
         <TextView
             android:id="@+id/en_voice"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="english tongue"
+            android:text="British style"
             android:textColor="@color/light_blue"
             android:textSize="20sp" />
 
         <ImageView
-            android:id="@+id/iv_en_voice"
+            android:id="@+id/im_en_voice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
