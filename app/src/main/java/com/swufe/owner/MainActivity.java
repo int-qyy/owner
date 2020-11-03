@@ -30,22 +30,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //context="快点滚去学习";
-        //Message.show(context);
-
+        Message.show(MainActivity.this);
     }
 
     public void addV(View view){
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        Notification notification =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_launcher_background)
-                        .setContentTitle("标题")
-                        .setContentText("信息").build();
-        notificationManager=(NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(0,notification);
-        Intent intentt=new Intent(MainActivity.this, AddVo.class);
-        startActivity(intentt);
+        Intent intent=new Intent(MainActivity.this, AddVo.class);
+        startActivity(intent);
     }
     public void testV(View view){
         Intent intent=new Intent(MainActivity.this, TestVo.class);
@@ -55,18 +45,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent=new Intent(MainActivity.this, DeleteList.class);
         startActivity(intent);
     }
-
-    /**
-     * 消息提醒
-     */
-    public void sendBroadCast() {
-        Intent intent=new Intent();
-        intent.setAction(Intent.ACTION_EDIT);//类型
-        intent.putExtra("topic", "最新消息");
-        intent.putExtra("msg", "出来了");
-        super.sendBroadcast(intent);
-          }
-
 
     private long firstTime = 0;
     /**

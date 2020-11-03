@@ -76,55 +76,105 @@ public class TestVo extends AppCompatActivity {
 
         final String urlxml = "https://dict-co.iciba.com/api/dictionary.php?w=" + english + "&key=9AA9FA4923AC16CED1583C26CF284C3F";
 
-            HttpUtils.sendOkHttpRequest(urlxml, new Callback() {
-                @Override
-                public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                    Toast.makeText(TestVo.this, "获取翻译数据失败！", Toast.LENGTH_SHORT).show();
-                }
+        HttpUtils.sendOkHttpRequest(urlxml, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Toast.makeText(TestVo.this, "获取翻译数据失败！", Toast.LENGTH_SHORT).show();
+            }
 
-                @Override
-                public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
+                final String result = response.body().string();
+                Log.i(TAG,"getting=========================================");
+                Log.i(TAG, result);
+                runOnUiThread(new Runnable() {
+                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                    @Override
+                    public void run() {
+                        Envoice(result);
+                        SharedPreferences pref = getSharedPreferences("JsonEx", MODE_PRIVATE);
+                        final String voiceEnUrlText = pref.getString("voiceEnUrlText", "空");
+                        Log.i(TAG, "enurlText===============" + voiceEnUrlText);
+                        /**
+                         *
 
-                    final String result = response.body().string();
-                    Log.i(TAG,"getting=========================================");
-                    Log.i(TAG, result);
-                    runOnUiThread(new Runnable() {
-                        @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                        @Override
-                        public void run() {
-                            Envoice(result);
-                            SharedPreferences pref = getSharedPreferences("JsonEx", MODE_PRIVATE);
-                            final String voiceEnUrlText = pref.getString("voiceEnUrlText", "空");
-                            Log.i(TAG,"enurlText==============="+voiceEnUrlText);
-                            final MediaPlayer[] mediaPlayer = {new MediaPlayer()};
-                            try {
-                                mediaPlayer[0].setDataSource(TestVo.this, Uri.parse(voiceEnUrlText));
-                                mediaPlayer[0].prepare();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            ImageView enVoiceImg = (ImageView) findViewById(R.id.im_en_voice);
-                            enVoiceImg.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    try {
-                                        mediaPlayer[0].start();
-                                        Log.i(TAG,"已经播放");
-                                        mediaPlayer[0].reset();
-                                        mediaPlayer[0].release();
-                                        mediaPlayer[0] = null;
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            });
+                         final MediaPlayer[] mediaPlayer = {new MediaPlayer()};
+                         try {
+                         mediaPlayer[0].setDataSource(TestVo.this, Uri.parse(voiceEnUrlText));
+                         mediaPlayer[0].prepare();
+                         } catch (IOException e) {
+                         e.printStackTrace();
+                         }
+                         ImageView enVoiceImg = (ImageView) findViewById(R.id.im_en_voice);
+                         enVoiceImg.setOnClickListener(new View.OnClickListener() {
+                        @Override public void onClick(View v) {
+                        try {
+                        mediaPlayer[0].start();
+                        Log.i(TAG,"已经播放");
+                        mediaPlayer[0].reset();
+                        mediaPlayer[0].release();
+                        mediaPlayer[0] = null;
+                        } catch (Exception e) {
+                        e.printStackTrace();
                         }
-                    });
-                }
-            });
+                        }
+
+                        });
+                         */
+
+                        final MediaPlayer[] mediaPlayer = {new MediaPlayer()};
+                        try {
+                            mediaPlayer[0].setDataSource(voiceEnUrlText);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        mediaPlayer[0].setAudioStreamType(AudioManager.STREAM_MUSIC);
+                        mediaPlayer[0].setOnErrorListener(new MediaPlayer.OnErrorListener() {
+
+                            @Override
+                            public boolean onError(MediaPlayer mp, int what, int extra) {
+                                mp.stop();
+                                mp.release();
+                                Log.i(TAG,"Error on Listener,what:"+what+"extra:"+extra);
+                                return false;
+                            }
+                        });
+
+                        mediaPlayer[0].setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
+
+                            @Override
+                            public void onCompletion(MediaPlayer arg0) {
+                                arg0.stop();
+                                arg0.release();
+                                Log.i(TAG,"mediaPlayer Listener completed");
+                            }
+                        });
 
 
-    }
+                        try {
+                            mediaPlayer[0].prepare();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        mediaPlayer[0].setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                            @Override
+                            public void onPrepared(MediaPlayer mp) {
+                                mediaPlayer[0].start();
+                                mediaPlayer[0].release();
+                                mediaPlayer[0] = null;
+                            }
+                        });
+
+
+
+
+                    }
+                });
+            }
+        });
+
+
+}
 
 
 
