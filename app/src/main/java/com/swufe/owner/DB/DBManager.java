@@ -1,4 +1,4 @@
-package com.swufe.owner;
+package com.swufe.owner.DB;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,10 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.google.android.material.tabs.TabLayout;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class DBManager {
@@ -29,6 +26,7 @@ public class DBManager {
         values.put("EnString", item.getEnString());
         //values.put("kaString", item.getKaString());
         values.put("ChString",item.getChString());
+        values.put("ENURL",item.getEnUrl());
         db.insert(TBNAME, null, values);
         Log.i(TAG,"have add");
         db.close();
@@ -119,4 +117,20 @@ public int count(){
         db.close();
         return voItem;
     }
+
+
+    //获取发音文件地址
+    public String getADD(String searchedWord){
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor=db.query(TBNAME, new String[]{"ENURL"}, "word=?", new String[]{searchedWord}, null, null, null);
+        if(cursor.moveToNext()==false){
+            cursor.close();
+            return null;
+        }
+        String str=cursor.getString(cursor.getColumnIndex("ENURL"));
+        cursor.close();
+        return str;
+
+    }
+
 }

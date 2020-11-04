@@ -1,4 +1,4 @@
-package com.swufe.owner;
+package com.swufe.owner.Utils;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 public class HttpUtils {

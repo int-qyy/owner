@@ -3,20 +3,22 @@ package com.swufe.owner;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
+
+import com.swufe.owner.DB.DBManager;
+import com.swufe.owner.DB.VoItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,7 +78,7 @@ public class DeleteList  extends AppCompatActivity implements Runnable, AdapterV
         if(dbManager.listAll()==null){
             Toast.makeText(this, "数据库为空", Toast.LENGTH_SHORT).show();
         }else {
-            for (VoItem voItem : dbManager.listAll()) {
+            for (VoItem voItem : result) {
                 HashMap<String, String> map = new HashMap<String, String>();
                 map.put("EnString", voItem.getEnString());
                 map.put("ChString", voItem.getChString());
@@ -156,6 +158,29 @@ public class DeleteList  extends AppCompatActivity implements Runnable, AdapterV
     public void rem(View view){
         Intent intent=new Intent(DeleteList.this, MainActivity.class);
         startActivity(intent);
+    }
+
+
+    private long firstTime = 0;
+    /**
+     * 监听keyUP 实现双击退出
+     * @param keyCode
+     * @param event
+     * @return
+     */
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
+            long nowTime = System.currentTimeMillis();
+            if (nowTime - firstTime > 2000) {
+                Toast.makeText(DeleteList.this, "你给我回来", Toast.LENGTH_SHORT).show();
+                firstTime = nowTime;
+                return true;
+            } else {
+                finish();
+            }
+        }
+        return super.onKeyUp(keyCode, event);
     }
 }
 

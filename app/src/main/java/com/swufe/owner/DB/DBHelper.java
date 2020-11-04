@@ -1,4 +1,4 @@
-package com.swufe.owner;
+package com.swufe.owner.DB;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -24,7 +24,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.i(TAG, "onCreate: " +TB_NAME);
-        db.execSQL("CREATE TABLE "+TB_NAME+"(ID INTEGER PRIMARY KEY AUTOINCREMENT,ENSTRING TEXT,CHSTRING TEXT)");
+        db.execSQL("CREATE TABLE "+TB_NAME+"(ID INTEGER PRIMARY KEY AUTOINCREMENT,ENSTRING TEXT,CHSTRING TEXT,ENURL TEXT)");
     }
 
     @Override

@@ -5,12 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.stetho.Stetho;
+import com.swufe.owner.DB.DBManager;
+import com.swufe.owner.DB.VoItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +55,27 @@ public class AddVo extends AppCompatActivity {
 
         Intent intent=new Intent(AddVo.this, MainActivity.class);
         startActivity(intent);
+    }
+    private long firstTime = 0;
+    /**
+     * 监听keyUP 实现双击退出
+     * @param keyCode
+     * @param event
+     * @return
+     */
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
+            long nowTime = System.currentTimeMillis();
+            if (nowTime - firstTime > 2000) {
+                Toast.makeText(AddVo.this, "你给我回来", Toast.LENGTH_SHORT).show();
+                firstTime = nowTime;
+                return true;
+            } else {
+                finish();
+            }
+        }
+        return super.onKeyUp(keyCode, event);
     }
 
 

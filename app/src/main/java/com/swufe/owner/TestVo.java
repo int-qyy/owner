@@ -3,31 +3,29 @@ package com.swufe.owner;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.swufe.owner.DB.DBManager;
+import com.swufe.owner.DB.VoItem;
+import com.swufe.owner.Utils.HttpUtils;
+import com.swufe.owner.Utils.PlayEn;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.HttpURLConnection;
 import java.util.Random;
 
 import okhttp3.Call;
@@ -42,6 +40,7 @@ public class TestVo extends AppCompatActivity {
     EditText EnString;
     TextView ChString,ShowString;
     Handler handler;
+    public PlayEn mp3Box=null;
 
 
     @Override
@@ -51,6 +50,7 @@ public class TestVo extends AppCompatActivity {
         EnString=(EditText)findViewById(R.id.ipt);
         ChString=(TextView)findViewById(R.id.ch1);
         ShowString=(TextView) findViewById(R.id.showVo);
+        mp3Box=new PlayEn(TestVo.this, "my_vo");
 
         DBManager dbManager = new DBManager(TestVo.this);
         Random r = new Random();
@@ -87,93 +87,17 @@ public class TestVo extends AppCompatActivity {
                 final String result = response.body().string();
                 Log.i(TAG,"getting=========================================");
                 Log.i(TAG, result);
+                String voiceEnUrlText= Envoice(result);
+                Log.i(TAG, "enurlText===============" + voiceEnUrlText);
                 runOnUiThread(new Runnable() {
                     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                     @Override
                     public void run() {
-                        Envoice(result);
-                        SharedPreferences pref = getSharedPreferences("JsonEx", MODE_PRIVATE);
-                        final String voiceEnUrlText = pref.getString("voiceEnUrlText", "空");
-                        Log.i(TAG, "enurlText===============" + voiceEnUrlText);
-                        /**
-                         *
-
-                         final MediaPlayer[] mediaPlayer = {new MediaPlayer()};
-                         try {
-                         mediaPlayer[0].setDataSource(TestVo.this, Uri.parse(voiceEnUrlText));
-                         mediaPlayer[0].prepare();
-                         } catch (IOException e) {
-                         e.printStackTrace();
-                         }
-                         ImageView enVoiceImg = (ImageView) findViewById(R.id.im_en_voice);
-                         enVoiceImg.setOnClickListener(new View.OnClickListener() {
-                        @Override public void onClick(View v) {
-                        try {
-                        mediaPlayer[0].start();
-                        Log.i(TAG,"已经播放");
-                        mediaPlayer[0].reset();
-                        mediaPlayer[0].release();
-                        mediaPlayer[0] = null;
-                        } catch (Exception e) {
-                        e.printStackTrace();
-                        }
-                        }
-
-                        });
-                         */
-
-                        final MediaPlayer[] mediaPlayer = {new MediaPlayer()};
-                        try {
-                            mediaPlayer[0].setDataSource(voiceEnUrlText);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        mediaPlayer[0].setAudioStreamType(AudioManager.STREAM_MUSIC);
-                        mediaPlayer[0].setOnErrorListener(new MediaPlayer.OnErrorListener() {
-
-                            @Override
-                            public boolean onError(MediaPlayer mp, int what, int extra) {
-                                mp.stop();
-                                mp.release();
-                                Log.i(TAG,"Error on Listener,what:"+what+"extra:"+extra);
-                                return false;
-                            }
-                        });
-
-                        mediaPlayer[0].setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
-
-                            @Override
-                            public void onCompletion(MediaPlayer arg0) {
-                                arg0.stop();
-                                arg0.release();
-                                Log.i(TAG,"mediaPlayer Listener completed");
-                            }
-                        });
-
-
-                        try {
-                            mediaPlayer[0].prepare();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        mediaPlayer[0].setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                            @Override
-                            public void onPrepared(MediaPlayer mp) {
-                                mediaPlayer[0].start();
-                                mediaPlayer[0].release();
-                                mediaPlayer[0] = null;
-                            }
-                        });
-
-
-
-
+                        mp3Box.playMusicByWord(voiceEnUrlText);
                     }
                 });
             }
         });
-
-
 }
 
 
@@ -191,8 +115,6 @@ public class TestVo extends AppCompatActivity {
             ShowString.setText(english);
             Log.i(TAG,english+enString);
         }
-        //Intent intent=new Intent(TestVo.this, TestVo.class);
-        //startActivity(intent);
     }
 
 
@@ -209,17 +131,18 @@ public class TestVo extends AppCompatActivity {
     }
 
 
-
-    public void Envoice(String result) {
-
+    /**
+     * 获取英文发音URL
+     * @param result
+     */
+    public String Envoice(String result) {
+        String voiceUrlText = "";   //发音url
         try {
 
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             XmlPullParser xmlPullParser = factory.newPullParser();
             xmlPullParser.setInput(new StringReader(result));
             int eventType = xmlPullParser.getEventType();
-
-            String voiceUrlText = "";   //发音url
 
 
             while (eventType != XmlPullParser.END_DOCUMENT) {
@@ -242,18 +165,33 @@ public class TestVo extends AppCompatActivity {
                 eventType = xmlPullParser.next();
             }
 
-            //创建SharedPreferences.Editor对象，指定文件名为
-            SharedPreferences.Editor editor = getSharedPreferences("JsonEx",MODE_PRIVATE).edit();
-            editor.clear();
-            Log.i(TAG,"create editor");
-            editor.putString("voiceEnUrlText",voiceUrlText);
-            Log.i(TAG,"voiceURL==============="+voiceUrlText);
-            editor.apply();
         } catch (Exception e) {
             e.printStackTrace();
             Log.i(TAG, "解析过程中出错！！！");
         }
+        return voiceUrlText;
+    }
 
+    private long firstTime = 0;
+    /**
+     * 监听keyUP 实现双击退出
+     * @param keyCode
+     * @param event
+     * @return
+     */
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
+            long nowTime = System.currentTimeMillis();
+            if (nowTime - firstTime > 2000) {
+                Toast.makeText(TestVo.this, "你给我回来", Toast.LENGTH_SHORT).show();
+                firstTime = nowTime;
+                return true;
+            } else {
+                finish();
+            }
+        }
+        return super.onKeyUp(keyCode, event);
     }
 
 

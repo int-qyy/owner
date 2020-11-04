@@ -1,10 +1,18 @@
-package com.swufe.owner;
+package com.swufe.owner.DB;
 
 public class VoItem {
     private int id;
     private String EnString;
     private String ChString;
+    private String EnUrl;
 
+    public String getEnUrl() {
+        return EnUrl;
+    }
+
+    public void setEnUrl(String enUrl) {
+        EnUrl = enUrl;
+    }
 
     public int getId() {
         return id;
@@ -34,6 +42,7 @@ public class VoItem {
         super();
         EnString = "";
         ChString="";
+        EnString="";
     }
     public VoItem(String enString,  String chString) {
         super();

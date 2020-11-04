@@ -3,20 +3,15 @@ package com.swufe.owner;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
-import android.annotation.TargetApi;
-import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
+
+import com.swufe.owner.Utils.Message;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -58,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
             long nowTime = System.currentTimeMillis();
             if (nowTime - firstTime > 2000) {
-                Toast.makeText(MainActivity.this, "双击退出", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "你给我回来", Toast.LENGTH_SHORT).show();
                 firstTime = nowTime;
                 return true;
             } else {

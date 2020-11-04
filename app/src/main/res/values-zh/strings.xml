@@ -5,7 +5,7 @@
     <string name="test">测试</string>
     <string name="list">显示内容</string>
     <string name="title">OWNER</string>
-    <string name="describe">存储听写的单词</string>
+    <string name="describe">私人单词听写本</string>
     <string name="En">请输入英文</string>
     <string name="Ch">请输入中文</string>
     <string name="hint">请输入英文</string>
