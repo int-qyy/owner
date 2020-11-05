@@ -34,8 +34,7 @@ public class PlayEn {
         //走到这里说明文件夹里一定有响应的音乐文件，故在这里播放
         /**
          * 这个方法存在缺点，可能因为同时new 了多个MediaPlayer对象，导致start方法失效，
-         * 因此解决的方法是，使用同一个MediaPlayer对象，若一次播放时发现对象非空，那么先
-         * 调用release()方法释放资源，再重新create
+         * 因此解决的方法是，使用同一个MediaPlayer对象，若一次播放时发现对象非空，那么先调用release()方法释放资源，再重新create
          */
 
 
@@ -48,7 +47,6 @@ public class PlayEn {
             }
             mediaPlayer=MediaPlayer.create(context, Uri.parse(url));
             mediaPlayer.start();
-
         }catch(Exception e){
             mediaPlayer.release();
             e.printStackTrace();

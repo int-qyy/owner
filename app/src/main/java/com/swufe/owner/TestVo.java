@@ -3,13 +3,17 @@ package com.swufe.owner;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +36,8 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
+import static android.os.Looper.*;
+
 public class TestVo extends AppCompatActivity {
 
     private static final String TAG="TestVo";
@@ -39,6 +45,8 @@ public class TestVo extends AppCompatActivity {
     String english,chinese;
     EditText EnString;
     TextView ChString,ShowString;
+    ImageView enImg;
+
     Handler handler;
     public PlayEn mp3Box=null;
 
@@ -50,6 +58,8 @@ public class TestVo extends AppCompatActivity {
         EnString=(EditText)findViewById(R.id.ipt);
         ChString=(TextView)findViewById(R.id.ch1);
         ShowString=(TextView) findViewById(R.id.showVo);
+        enImg= (ImageView) findViewById(R.id.im_en_voice);
+
         mp3Box=new PlayEn(TestVo.this, "my_vo");
 
         DBManager dbManager = new DBManager(TestVo.this);
@@ -84,23 +94,37 @@ public class TestVo extends AppCompatActivity {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
+
                 final String result = response.body().string();
-                Log.i(TAG,"getting=========================================");
                 Log.i(TAG, result);
-                String voiceEnUrlText= Envoice(result);
-                Log.i(TAG, "enurlText===============" + voiceEnUrlText);
+
                 runOnUiThread(new Runnable() {
-                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                     @Override
                     public void run() {
-                        mp3Box.playMusicByWord(voiceEnUrlText);
+                        String voiceEnUrlText= Envoice(result);
+                        Log.i(TAG, "enurlText===============" + voiceEnUrlText);
+                        //mp3Box.playMusicByWord(voiceEnUrlText);
+                        enImg.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                try {
+                                    MediaPlayer mediaPlayer;
+                                    mediaPlayer = MediaPlayer.create(TestVo.this,Uri.parse(voiceEnUrlText));
+                                    mediaPlayer.start();
+                                    Log.i(TAG,"已发声");
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
                     }
                 });
             }
         });
+
 }
-
-
 
     public void submit(View view){
         EnString=(EditText)findViewById(R.id.ipt);
@@ -127,6 +151,11 @@ public class TestVo extends AppCompatActivity {
     }
     public void nex(View view){
         Intent intent=new Intent(TestVo.this, TestVo.class);
+        startActivity(intent);
+    }
+
+    public void voice(View view){
+        Intent intent=new Intent(TestVo.this, MainActivity.class);
         startActivity(intent);
     }
 
@@ -171,6 +200,7 @@ public class TestVo extends AppCompatActivity {
         }
         return voiceUrlText;
     }
+
 
     private long firstTime = 0;
     /**
